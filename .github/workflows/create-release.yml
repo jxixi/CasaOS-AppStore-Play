@@ -16,11 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Delete tag and release
-        uses: dev-drprasad/delete-tag-and-release@v1.0
-        with:
-          tag_name: new
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+ 
 
       - name: Filter and Create Release
         id: create_release
