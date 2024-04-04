@@ -27,17 +27,14 @@ jobs:
         run: |
           # Build universal
           zip AppStore.zip $(find . -type f \( -wholename "./*.json" -o -wholename "./Apps/*.yml" \))
-
           # Build arm
           [ -d "./Apps_arm" ] && cp -rfu ./Apps_arm/*   ./Apps/
           zip AppStore_arm.zip   $(find . -type f -wholename "./*.json" && find . -type f -wholename "./Apps/*.yml" -exec grep -rlPz 'x-casaos:\s*\n\s*architectures:[\n\s\w-]*- arm\s*\n' {} \;)
           git checkout -- ./Apps && git clean -df ./Apps
-
           # Build arm64
           [ -d "./Apps_arm64" ] && cp -rfu ./Apps_arm64/* ./Apps/
           zip AppStore_arm64.zip $(find . -type f -wholename "./*.json" && find . -type f -wholename "./Apps/*.yml" -exec grep -rlPz 'x-casaos:\s*\n\s*architectures:[\n\s\w-]*- arm64\s*\n' {} \;)
           git checkout -- ./Apps && git clean -df ./Apps
-
           # Build amd64
           [ -d "./Apps_amd64" ] && cp -rfu ./Apps_amd64/* ./Apps/
           zip AppStore_amd64.zip $(find . -type f -wholename "./*.json" && find . -type f -wholename "./Apps/*.yml" -exec grep -rlPz 'x-casaos:\s*\n\s*architectures:[\n\s\w-]*- amd64\s*\n' {} \;)
@@ -56,17 +53,3 @@ jobs:
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload to OSS
-        id: upload_to_oss
-        uses: tvrcgo/upload-to-oss@master
-        with:
-          key-id: ${{ secrets.OSS_KEY_ID }}
-          key-secret: ${{ secrets.OSS_KEY_SECRET }}
-          endpoint: ${{ secrets.OSS_ENDPOINT }}
-          bucket: ${{ secrets.OSS_BUCKET }}
-          assets: |
-            AppStore.zip:Cp0204-AppStore-Play.zip
-            AppStore_arm.zip:Cp0204-AppStore-Play-arm.zip
-            AppStore_arm64.zip:Cp0204-AppStore-Play-arm64.zip
-            AppStore_amd64.zip:Cp0204-AppStore-Play-amd64.zip
